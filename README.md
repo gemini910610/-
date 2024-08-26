@@ -4,22 +4,22 @@
 現存FFG方法很難保證生成結果和參考字形在組件層面上風格一致。
 一些研究（MF-Net, FsFont）使用注意力機制捕捉多級風格，但這忽略不同風格字形的差異和相同風格字形的相似性，導致局部失真或風格不一致。
 ## 模型
-輸入為單個內容圖$I_c$，跟多個風格圖$I_s$，輸出結果$I_{cs}$。
+輸入為單個內容圖 $I_c$，跟多個風格圖 $I_s$，輸出結果 $I_{cs}$。
 1. $I_s\xrightarrow{MSP}風格編碼z$
 2. 根據風格標籤計算每個風格的類別中心
-3. 將每個類別的中心編碼$z_j$存進內存字典
+3. 將每個類別的中心編碼 $z_j$存進內存字典
 
-$I^+$,$I^-$分別是跟$I_{cs}$相同、不同風格的圖片。
-$\hat{z}^+$,$\hat{z}^-$分別是對應字體跟其他字體圖片的編碼，用作正、負樣本。
+$I^+$, $I^-$分別是跟 $I_{cs}$相同、不同風格的圖片。
+$\hat{z}^+$, $\hat{z}^-$分別是對應字體跟其他字體圖片的編碼，用作正、負樣本。
 1. $I_{cs}\xrightarrow{MSP}風格編碼\hat{q}$
-2. 利用$\hat{z}^+$,$\hat{z}^-$計算cluster-level對比風格損失$L^G_{contra}$、對抗損失、L1損失。
+2. 利用 $\hat{z}^+$, $\hat{z}^-$計算cluster-level對比風格損失 $L^G_{contra}$、對抗損失、L1損失。
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_53770dc811a6fd6176569d31b8af0faf.png)
 ## Multi-layer Style Projector
 字體風格精細複雜，特徵抽取要考慮不同尺度，如component-level, stroke-level, 和even edge-level。MSP可以將多層特徵分別投影到獨立的隱風格空間，編碼不同粒度的風格。
 這裡3種尺度分別對應圖片1, $\frac{1}{2}$, $\frac{1}{4}$的原始分辨率，然後通過平均池化和最大池化分別獲取通道方向的（channel-wise）均值和峰值，然後再將其分別投影成K維風格編碼。
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_2f11f0cc0538b3d9c2d4adc901e56ba8.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_2f11f0cc0538b3d9c2d4adc901e56ba8.png=75%x)
 ## Multi-task Patch Discriminator
 * 兩個patch判別器
     * 分別區分內容和風格
@@ -28,14 +28,14 @@ $\hat{z}^+$,$\hat{z}^-$分別是對應字體跟其他字體圖片的編碼，用
     * 辨別不同的風格/內容
     * 分辨整張圖，卻忽略圖中每個部份的貢獻
 
-結合二者提出的判別器能夠獨立判別圖片的不同區域，有助於$I_{cs}$的局部細節跟groundtruth更一致。
+結合二者提出的判別器能夠獨立判別圖片的不同區域，有助於 $I_{cs}$的局部細節跟groundtruth更一致。
 ## Generator
 基於FTransGAN的encoder-transformation-decoder架構。
 通過self-attention和layer-attention匯聚風格特徵，以此捕捉局部與全局特徵。
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_736426356000cf78a558c1fe99a8873a.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_736426356000cf78a558c1fe99a8873a.png=75%x)
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_5544ba623698aa0eb8539b5b8915c95b.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_5544ba623698aa0eb8539b5b8915c95b.png=75%x)
 # [[2]](https://www.cnblogs.com/Stareven233/p/17167660.html) SGCE-Font: Skeleton Guided Channel Expansion for Chinese Font Generation
 ## 背景
 之前的方法無法同時顧及局部和全局的訊息。
@@ -46,9 +46,9 @@ skeleton直接作為輸入，而不是給判別器加約束。
 3. CycleGAN
 4. 計算對抗損失（source、target各一個）、循環一致性損失、skeleton一致性損失
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_483167f1488809ac86047399701a79a9.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_483167f1488809ac86047399701a79a9.png=75%x)
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_ebf629954078e4067d0e929f1015ffec.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_ebf629954078e4067d0e929f1015ffec.png=75%x)
 # [[3]](https://www.cnblogs.com/Stareven233/p/17027164.html) Diff-Font: Diffusion Model for Robust One-Shot Font Generation
 ## 針對問題
 1. font gap
@@ -61,22 +61,22 @@ skeleton直接作為輸入，而不是給判別器加約束。
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_06ba917ec615881fa1ea536237b90e27.png)
 ## 模型
 1. 字符屬性編碼器f
-    將字符屬性（內容c、風格sty、筆畫sk）編碼為隱變量$z=f(c, sk, sty)$
+    將字符屬性（內容c、風格sty、筆畫sk）編碼為隱變量 $z=f(c, sk, sty)$
 2. DDPM(UNet架構)
     將z作為條件從高斯噪聲中生成字符圖片
 
 不同於StrokeGAN的32維畫筆變量，每一維不是0/1，而是筆畫的數量。
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_d8ee9341085b9d21725071fe8dec0ad8.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_d8ee9341085b9d21725071fe8dec0ad8.png=75%x)
 
 * 擴散階段
-    逐步給真實圖片$x_0$添加高斯噪聲，使其成為噪聲$x_T$
+    逐步給真實圖片 $x_0$添加高斯噪聲，使其成為噪聲 $x_T$
 * 反擴散階段
     使用z作為條件訓練DDPM，以預測每個擴散階段添加的噪聲
-1. 從$x_1$~$x_T$隨機抽樣一個$x_t$
+1. 從 $x_1$~ $x_T$隨機抽樣一個 $x_t$
 2. $x_t\xrightarrow{添加噪聲}x_{t+1}$
 3. $x_t\xrightarrow{DDPM}\hat{x}_{t+1}$
-4. 計算$x_{t+1}$和$\hat{x}_{t+1}$的L2損失
+4. 計算 $x_{t+1}$和 $\hat{x}_{t+1}$的L2損失
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_d26989fada2452ed79bc7d42aee0e622.png)
 ## 指標
@@ -112,7 +112,7 @@ Stroke encodings似乎沒有輸入Discriminator，僅有用來計算損失
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_2e7a0e58da30e465130c5d0f67279b41.png)
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_b2ae539706cd38187a1c0e7bd9eb1a9f.png =50%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_b2ae539706cd38187a1c0e7bd9eb1a9f.png=50%x)
 ## 指標
 1. Pixel-level
     * mean absolute error(MAE)
@@ -130,7 +130,7 @@ Stroke encodings似乎沒有輸入Discriminator，僅有用來計算損失
 ## Language Complexity-aware Skip Connection
 不同語言對於局部/全局特徵需求程度不同，可以調整不同卷積層抽取的特徵圖的信息度，取得局部全局信息的平衡。
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_f2b3edaabc4dc307012502f5dbe7c7f4.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_f2b3edaabc4dc307012502f5dbe7c7f4.png=75%x)
 
 ## 模型
 context-aware上下文感知注意力模塊通過捕捉全局信息能獲得更大的感受野跟上下文信息。
@@ -138,7 +138,7 @@ decoder將內容、風格向量拼接後作為輸入。
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_7ce06fb85bab560b32c98c7923d090d4.png)
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_062b1e09a9d86cd01705099658968774.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_062b1e09a9d86cd01705099658968774.png=75%x)
 style encoder
 # [[7]](https://www.cnblogs.com/Stareven233/p/16898394.html) FontTransformer: Few-shot High-resolution Chinese Glyph Image Synthesis via Stacked Transformers
 ## Chunked Glyph Image Encoding
@@ -168,15 +168,15 @@ SSIM、RMSE、LPIPS、FID
 # [[9]](https://www.cnblogs.com/Stareven233/p/16649554.html) Few-Shot Font Generation by Learning Fine-Grained Local Styles
 使用基於transformer的cross attenstion機制，使模型能夠更加容易匹配內容字和風格字的空間特徵，風格字的風格能完美地遷移到目標字的對應位置
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_7de9fac505548e9147b76168b3b0695a.png =75%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_7de9fac505548e9147b76168b3b0695a.png=75%x)
 ## Style Aggregation Module(SAM)
 * 即為Attention機制
-* $F_s$、$F_c$分別是內容字和風格字提取出的feature map
-* $F_s$、$F_c$ $\xrightarrow{線性變換}$ 注意力機制的Q、K、V三個矩陣
+* $F_s$、 $F_c$分別是內容字和風格字提取出的feature map
+* $F_s$、 $F_c$ $\xrightarrow{線性變換}$ 注意力機制的Q、K、V三個矩陣
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_c25b563e79dde442a38c238fbc39294e.png)
 ## Reference Selection
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_501029749eaaa2933baf52964cad51dd.png =50%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_501029749eaaa2933baf52964cad51dd.png=50%x)
 
 1. 基於[分解表](https://github.com/cjkvi/cjkvi-ids/blob/master/ids.txt)，將每個字符分解為部件樹，定義級別0、1、2的部件為高級部件(conspicuoius-level)
 2. 選取參考字集
@@ -196,14 +196,14 @@ SSIM、RMSE、LPIPS、FID
 # [[10]](https://www.cnblogs.com/Stareven233/p/16649550.html) DG-Font: Deformable Generative Networks for Unsupervised Font Generation
 因為內容相同的兩種不同風格的字體，它們的每一筆畫都是對應的
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_a30f1eae6be852e6a3d9fc5472e11161.png =50%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_a30f1eae6be852e6a3d9fc5472e11161.png=50%x)
 ## 模型
 * Style Encoder
     從Style Images學習Style Representation
 * Content Encoder
     提取Content Images的結構特徵
 * Mixer
-    混和$Z_c$和$Z_s$來生成輸出字符
+    混和 $Z_c$和 $Z_s$來生成輸出字符
     使用AdaIN方法將style特徵注入Mixer
 * FDSC(feature deformation skip connection modules)
     預測一個位移映射map，去對low-level的特徵圖做變形卷積
@@ -223,15 +223,15 @@ SSIM、RMSE、LPIPS、FID
 
 ![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_23c29a5d9173925d1fe126f8c3a52d31.png)
 ## 分類器
-風格特徵分類器$Cls_s$
-組件特徵分類器$Cls_u$
+風格特徵分類器 $Cls_s$
+組件特徵分類器 $Cls_u$
 只有訓練時使用，用來預測風格/內容標籤
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_1a8d99895e97e7114e10ec17052465a1.png =60%x)
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_1a8d99895e97e7114e10ec17052465a1.png=60%x)
 若得到均勻預測，表示分類器無法分類（例如將風格特徵給內容分類器）
 
-![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_23956cceee50c2f27f3b16602331cc0a.png =50%x)
-任一條邊表示專家和對應組件之間的預測概率，由組件分類器$Cls_u$給出
+![](https://s3-ap-northeast-1.amazonaws.com/g0v-hackmd-images/uploads/upload_23956cceee50c2f27f3b16602331cc0a.png=50%x)
+任一條邊表示專家和對應組件之間的預測概率，由組件分類器 $Cls_u$給出
 目標是找到一個邊集來最大化預測概率
 ## MX-Font
 * 可以捕捉多個局部風格
